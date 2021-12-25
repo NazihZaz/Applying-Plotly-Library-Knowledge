@@ -4,6 +4,7 @@ function plotting(sampleID) {
     // Read in samples.json
     d3.json("samples.json").then(function (data) {
         
+        // Filter the data
         let sampleData = data.samples.filter(i => i.id == sampleID)[0];
   
         // Set the metrics for the bar plot
@@ -31,7 +32,8 @@ function plotting(sampleID) {
             mode: "markers",
             marker: {
                 size: sampleData.sample_values,
-                color: sampleData.otu_ids
+                color: sampleData.otu_ids,
+                colorscale: "Earth"
             },
             text: sampleData.otu_labels,
             
@@ -59,8 +61,8 @@ function demographicInfo(sampleID) {
         let boxData = data.metadata.filter(x => x.id == sampleID)[0];
         d3.select("#sample-metadata").html("");
         Object.entries(boxData).forEach(element => {
-            d3.select("#sample-metadata").append("p").text(`${element[0]}: ${element[1]}`)
-        })
+            d3.select("#sample-metadata").append("h6").text(`${element[0]}: ${element[1]}`)
+        });
 
     });
 }
@@ -84,6 +86,8 @@ function dropDown() {
     });
 };
 
+
+// BONUS PART: GAUGE PLOT
 // Generate the gauge plot
 function gaugePlot(sampleID) {
     d3.json("samples.json").then(function (data) {
@@ -121,12 +125,13 @@ function gaugePlot(sampleID) {
 
 // Populate the plots
 function createPlots() {
-    dropDown();
+
     d3.json("samples.json").then(function (data) {
         let IDs = data.names[0];
         plotting(IDs);
         demographicInfo(IDs);
         gaugePlot(IDs);
+        dropDown();
     });
 };
 
